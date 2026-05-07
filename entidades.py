@@ -90,12 +90,12 @@ class Paciente(Persona, LogMixin):
         datos = linea_csv.strip().split(",")
         
         return cls(
-        nombre=datos[0],
-        edad=int(datos[1]),
-        dni=datos[2],
-        peso=float(datos[3]),
-        altura=float(datos[4]),
-        seguro=(datos[5] == "True")
+            nombre=datos[0],
+            edad=int(datos[1]),
+            dni=datos[2],
+            peso=float(datos[3]),
+            altura=float(datos[4]),
+            seguro=(datos[5] == "True")
         )
         
         
