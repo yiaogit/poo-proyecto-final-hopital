@@ -16,7 +16,7 @@ class GestorDatos:
         with open(GestorDatos.ARCHIVO_PACIENTES, "w", encoding="utf-8") as f:
             for p in lista_pacientes:
                 # Se asume la estructura definida con Integrante 1
-                linea = f"{p.nombre},{p.edad},{p._dni},{p.historial},{p.peso},{p.altura},{p.seguro}\n"
+                linea = f"{p.nombre},{p.edad},{p._dni},{p.peso},{p.altura},{p.seguro}\n"
                 f.write(linea)
         print(f"✅ Se guardaron {len(lista_pacientes)} pacientes en la base de datos.")
 
