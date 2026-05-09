@@ -10,7 +10,7 @@ class Persona:
     def __init__(self, nombre, edad, dni):
         self.nombre = nombre
         self.edad = edad    #usa el setter para validar que sea 0-120
-        self._dni = dni     #atributo proteido (solo tiene getter)
+        self._dni = dni     #atributo protegido (solo tiene getter)
     
     @property
     def edad(self):
@@ -50,7 +50,7 @@ class Paciente(Persona, LogMixin):
         super().__init__(nombre, edad, dni)
         self.peso = peso        #usa el setter para validar que sea positivo
         self.altura = altura    #usa el setter para validar que sea positivo
-        self.seguro = seguro    #True si tiene seguro mediso, False si no
+        self.seguro = seguro    #True si tiene seguro medico, False si no
         self.agenda = []        #lista de citas que rellena el modulo logica.py
 
         #registra automaticamente el paciente (Mixin)
