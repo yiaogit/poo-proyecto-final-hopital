@@ -15,22 +15,22 @@ El sistema está diseñado de forma modular para facilitar la colaboración y el
 ## 👥 Roles y Responsabilidades
 
 ### 👤 Integrante 1: Arquitecto de Entidades
-* **Aportes**: Implementación de la jerarquía de **Herencia**, uso de **Encapsulamiento** con `@property` (validación de edad, peso, altura) y **Polimorfismo** con `mostrar_datos()`.
+* **Aportes**: Implementación de la jerarquía de **Herencia**, uso de **Encapsulamiento** con `@property` y **Polimorfismo** con el método `mostrar_datos()` sobrescrito en las subclases.
 
 ### 👤 Integrante 2: Gestor de Operaciones
-* **Aportes**: Implementación de **Composición** (`Cita` posee un médico y un paciente; `Tratamiento` posee una cita) y creación de **Excepciones** específicas (`MedicoNoDisponibleError`).
+* **Aportes**: Implementación de **Composición** (`Cita` posee un médico y un paciente) y creación de **Excepciones** específicas (`MedicoNoDisponibleError`).
 
 ### 👤 Integrante 3: Especialista en Datos (Tu Rol)
 * **Aportes**: 
-    * **Persistencia**: Clase `GestorDatos` con manejo de archivos `with open()`.
-    * **Patrón Factory**: Método `@classmethod desde_csv()` en la clase `Paciente`.
-    * **Mixins**: Implementación de `LogMixin` para registrar acciones automáticamente.
-    * **Métodos Mágicos**: Implementación de `__eq__` (comparación por DNI) y `__str__`.
+    * **Persistencia**: Clase `GestorDatos` para la gestión técnica de archivos CSV.
+    * **Patrón Factory**: Método `@classmethod desde_csv()` en `Paciente` para reconstruir objetos desde texto.
+    * **Mixins**: Implementación de `LogMixin` para registro automático de eventos.
+    * **Métodos Mágicos**: Implementación de `__eq__` (comparación por DNI) y `__lt__` para ordenamiento.
 
 ### 👤 Integrante 4: Integrador
-* **Aportes**: Desarrollo del flujo principal en `main_py.py`, integración de módulos y gestión del ciclo de vida de los datos (carga al inicio, guardado al salir).
+* **Aportes**: Desarrollo del flujo principal en `main_py.py`, gestión del ciclo de vida de los datos e integración de módulos.
 
-## 📊 Arquitectura del Sistema (UML)
+## 📊 Arquitectura del Sistema (UML Preciso)
 
 ```mermaid
 classDiagram
@@ -45,18 +45,28 @@ classDiagram
         +registrar_log(mensaje)
     }
 
+    class GestorDatos {
+        +str ARCHIVO_PACIENTES$
+        +guardar_pacientes(lista_pacientes)$
+        +cargar_pacientes(clase_paciente)$
+    }
+
     class Paciente {
         +float peso
         +float altura
         +bool seguro
+        +list agenda
         +imc() property
-        +desde_csv(linea)$
+        +desde_csv(linea_csv)$
+        +mostrar_datos()
     }
 
     class Medico {
         +float salario
         +str especialidad
-        +identificacion
+        +str identificacion
+        +list agenda
+        +mostrar_datos()
     }
 
     class Cita {
@@ -64,17 +74,21 @@ classDiagram
         +Paciente paciente
         +str fecha_hora
         +str motivo
+        +Tratamiento tratamiento
     }
 
     class Tratamiento {
         +Cita cita
         +str tipo
+        +str descripcion
         +calcular_costo()
     }
 
     Persona <|-- Paciente
     Persona <|-- Medico
     LogMixin <|-- Paciente : Mixin
+    GestorDatos ..> Paciente : Dependencia (Factory)
+    
     Cita *-- Medico : Composición
     Cita *-- Paciente : Composición
     Tratamiento *-- Cita : Composición
