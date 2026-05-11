@@ -10,7 +10,7 @@ El sistema está diseñado de forma modular para facilitar la colaboración y el
 * **`logica.py`**: Define la lógica de negocio, incluyendo la gestión de `Cita`, `Tratamiento` y excepciones personalizadas.
 * **`persistencia.py`**: Encargado de la lectura y escritura de objetos en archivos CSV.
 * **`utilidades.py`**: Contiene herramientas transversales como el `LogMixin`.
-* **`main_py.py`**: El punto de entrada principal con el menú interactivo para el usuario.
+* **`main.py`**: El punto de entrada principal con el menú interactivo para el usuario.
 
 ## 👥 Roles y Responsabilidades
 
@@ -28,7 +28,7 @@ El sistema está diseñado de forma modular para facilitar la colaboración y el
     * **Métodos Mágicos**: Implementación de `__eq__` (comparación por DNI) y `__lt__` para ordenamiento.
 
 ### 👤 Integrante 4: Integrador
-* **Aportes**: Desarrollo del flujo principal en `main_py.py`, gestión del ciclo de vida de los datos e integración de módulos.
+* **Aportes**: Desarrollo del flujo principal en `main.py`, gestión del ciclo de vida de los datos e integración de módulos.
 
 ## 📊 Arquitectura del Sistema (UML Preciso)
 
