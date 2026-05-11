@@ -46,7 +46,7 @@ class Persona:
 
 #Clase Paciente
 class Paciente(Persona, LogMixin):
-    def __init__(self, nombre, edad, dni, peso, altura, seguro=False):
+    def __init__(self, nombre, edad, dni, peso, altura, seguro=False, es_nuevo=True):
         super().__init__(nombre, edad, dni)
         self.peso = peso        #usa el setter para validar que sea positivo
         self.altura = altura    #usa el setter para validar que sea positivo
@@ -54,7 +54,8 @@ class Paciente(Persona, LogMixin):
         self.agenda = []        #lista de citas que rellena el modulo logica.py
 
         #registra automaticamente el paciente (Mixin)
-        self.registrar_log(f"Nuevo paciente creado: {self.nombre} (DNI: {self._dni})")
+        if es_nuevo:
+            self.registrar_log(f"Nuevo paciente creado: {self.nombre} (DNI: {self._dni})")
 
     @property
     def peso(self):
@@ -109,7 +110,8 @@ class Paciente(Persona, LogMixin):
             dni=datos[2],
             peso=float(datos[3]),
             altura=float(datos[4]),
-            seguro=(datos[5] == "True")
+            seguro=(datos[5] == "True"),
+            es_nuevo=False
         )
 
 
