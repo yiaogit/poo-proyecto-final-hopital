@@ -54,13 +54,15 @@ def menu():
             print("Paciente agregado correctamente.")
 
         elif opcion == "2":
-
-            if len(lista_pacientes) == 0:
+            print("\n--- LISTA DE PACIENTES ---")
+        
+            if not lista_pacientes:
                 print("No hay pacientes registrados.")
-
             else:
                 for p in lista_pacientes:
-                    print(p)
+        
+                    print(p.mostrar_datos())
+                    print("-" * 35)
 
         elif opcion == "3":
 
