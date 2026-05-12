@@ -17,12 +17,8 @@ class PersonaNoEncontradaError(Exception):
 class Hospital:
     def __init__(self, nombre):
         self.nombre = nombre
-        # REQUISITO: Lista heterogénea. Aquí convivirán Médicos y Pacientes.
+        #Lista heterogénea. Aquí convivirán Médicos y Pacientes
         self._directorio = []
-
-    # ─────────────────────────────────────────
-    # Operaciones CRUD
-    # ─────────────────────────────────────────
 
     def agregar_persona(self, persona: Persona):
         """
@@ -126,9 +122,7 @@ class Hospital:
                 )
         return resultado
 
-    # ─────────────────────────────────────────
     # Métodos mágicos
-    # ─────────────────────────────────────────
 
     def __len__(self):
         """Permite usar len(hospital) para saber cuánta gente hay registrada."""
