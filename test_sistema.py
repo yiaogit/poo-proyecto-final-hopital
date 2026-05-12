@@ -1,6 +1,17 @@
 import unittest
+from datetime import datetime, timedelta
 from entidades import Paciente, Medico, Persona, DatoInvalidoError
 from logica import Cita, Tratamiento, MedicoNoDisponibleError
+
+
+# ─────────────────────────────────────────
+# Helper: genera fechas futuras dinámicamente
+# Así los tests no caducan con el paso del tiempo.
+# ─────────────────────────────────────────
+def _fecha_futura(dias=30, hora="10:00"):
+    """Devuelve una cadena 'DD/MM/YYYY HH:MM' con una fecha futura."""
+    f = datetime.now() + timedelta(days=dias)
+    return f.strftime("%d/%m/%Y") + " " + hora
 
 
 class TestPersona(unittest.TestCase):
@@ -111,6 +122,16 @@ class TestMedico(unittest.TestCase):
     def setUp(self):
         self.medico = Medico("Luis Perez", 45, "87654321B", 50000, "Cardiologia", "COL-001")
 
+    def test_especialidad_vacia(self):
+        """Una especialidad vacía lanza DatoInvalidoError."""
+        with self.assertRaises(DatoInvalidoError):
+            Medico("Test", 40, "00000000X", 3000, "   ", "COL-002")
+
+    def test_identificacion_vacia(self):
+        """Un ID colegiado vacío lanza DatoInvalidoError."""
+        with self.assertRaises(DatoInvalidoError):
+            Medico("Test", 40, "00000000X", 3000, "Cardiologia", "")
+
     def test_str(self):
         """__str__ incluye Dr./Dra. y la especialidad."""
         resultado = str(self.medico)
@@ -178,31 +199,50 @@ class TestCita(unittest.TestCase):
     def setUp(self):
         self.medico = Medico("Luis Perez", 45, "87654321B", 50000, "Cardiologia", "COL-001")
         self.paciente = Paciente("Ana Garcia", 30, "12345678A", 65, 1.68, True)
+        # Fecha base reutilizada por varios tests (siempre en el futuro)
+        self.fecha_base = _fecha_futura(30, "10:00")
+
+    def test_cita_fecha_invalida(self):
+        """Un formato de fecha incorrecto o fecha irreal lanza ValueError."""
+        # Formato incorrecto (guiones en lugar de barras). Usamos año futuro
+        # para que el fallo sea SOLO por formato, no por fecha pasada.
+        with self.assertRaises(ValueError):
+            Cita(self.medico, self.paciente, "15-06-2099", "Revisión")
+        # Fecha irreal (32 de enero) en año futuro
+        with self.assertRaises(ValueError):
+            Cita(self.medico, self.paciente, "32/01/2099 10:00", "Revisión")
+
+    def test_motivo_vacio(self):
+        """Un motivo vacío o lleno de espacios lanza ValueError."""
+        with self.assertRaises(ValueError):
+            Cita(self.medico, self.paciente, self.fecha_base, "   ")
 
     def test_cita_se_crea_correctamente(self):
         """Una cita válida se crea y aparece en la agenda del médico."""
-        cita = Cita(self.medico, self.paciente, "15/06/2025 10:00", "Revisión")
+        cita = Cita(self.medico, self.paciente, self.fecha_base, "Revisión")
         self.assertIn(cita, self.medico.agenda)
 
     def test_str_cita(self):
         """__str__ de Cita incluye médico, paciente y fecha."""
-        cita = Cita(self.medico, self.paciente, "15/06/2025 10:00", "Revisión")
+        cita = Cita(self.medico, self.paciente, self.fecha_base, "Revisión")
         resultado = str(cita)
-        self.assertIn("15/06/2025 10:00", resultado)
+        self.assertIn(self.fecha_base, resultado)
         self.assertIn("Luis Perez", resultado)
 
     def test_cita_duplicada_lanza_excepcion(self):
         """Crear dos citas en el mismo horario lanza MedicoNoDisponibleError."""
-        Cita(self.medico, self.paciente, "15/06/2025 10:00", "Primera")
+        Cita(self.medico, self.paciente, self.fecha_base, "Primera")
         with self.assertRaises(MedicoNoDisponibleError):
-            Cita(self.medico, self.paciente, "15/06/2025 10:00", "Duplicada")
+            Cita(self.medico, self.paciente, self.fecha_base, "Duplicada")
 
     def test_orden_cronologico(self):
         """sorted() ordena citas cronológicamente gracias a __lt__."""
-        cita1 = Cita(self.medico, self.paciente, "20/06/2025 09:00", "Segunda")
-        cita2 = Cita(self.medico, self.paciente, "15/06/2025 10:00", "Primera")
+        fecha_temprana = _fecha_futura(30, "10:00")
+        fecha_tardia = _fecha_futura(60, "09:00")
+        cita1 = Cita(self.medico, self.paciente, fecha_tardia, "Segunda")
+        cita2 = Cita(self.medico, self.paciente, fecha_temprana, "Primera")
         ordenadas = sorted([cita1, cita2])
-        self.assertEqual(ordenadas[0].fecha_hora, "15/06/2025 10:00")
+        self.assertEqual(ordenadas[0].fecha_hora, fecha_temprana)
 
 
 class TestTratamiento(unittest.TestCase):
@@ -210,11 +250,14 @@ class TestTratamiento(unittest.TestCase):
 
     def setUp(self):
         medico = Medico("Luis Perez", 45, "87654321B", 50000, "Cardiologia", "COL-001")
+        medico2 = Medico("Sara Lopez", 40, "22222222B", 45000, "Pediatria", "COL-002")
         self.paciente_con_seguro = Paciente("Ana Garcia", 30, "12345678A", 65, 1.68, True)
         self.paciente_sin_seguro = Paciente("Carlos Ruiz", 25, "11111111C", 80, 1.75, False)
-        medico2 = Medico("Sara Lopez", 40, "22222222B", 45000, "Pediatria", "COL-002")
-        self.cita_con_seguro = Cita(medico, self.paciente_con_seguro, "15/06/2025 10:00", "Revisión")
-        self.cita_sin_seguro = Cita(medico2, self.paciente_sin_seguro, "15/06/2025 11:00", "Consulta")
+        # Fechas futuras dinámicas para evitar caducidad
+        fecha1 = _fecha_futura(30, "10:00")
+        fecha2 = _fecha_futura(30, "11:00")
+        self.cita_con_seguro = Cita(medico, self.paciente_con_seguro, fecha1, "Revisión")
+        self.cita_sin_seguro = Cita(medico2, self.paciente_sin_seguro, fecha2, "Consulta")
 
     def test_costo_sin_seguro(self):
         """Sin seguro el costo es la tarifa completa."""
@@ -241,4 +284,3 @@ class TestTratamiento(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-    
