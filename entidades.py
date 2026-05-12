@@ -38,24 +38,33 @@ class Persona:
         if not isinstance(other, Persona):
             return NotImplemented
         return self.nombre < other.nombre
+    
+    def __hash__(self):
+        return hash(self._dni)
 
     #sobreescrito por Paciente y Medico (polimorfismo) 
     def mostrar_datos(self):
         return 'Datos de la persona'
 
 
-#Clase Paciente
+# Clase Paciente: Representa a un usuario del sistema hospitalario
+# Hereda de Persona (Atributos base) y LogMixin (Capacidad de auditoría)
 class Paciente(Persona, LogMixin):
     def __init__(self, nombre, edad, dni, peso, altura, seguro=False, es_nuevo=True):
+        # Inicialización de la clase base Persona
         super().__init__(nombre, edad, dni)
-        self.peso = peso        #usa el setter para validar que sea positivo
-        self.altura = altura    #usa el setter para validar que sea positivo
-        self.seguro = seguro    #True si tiene seguro medico, False si no
-        self.agenda = []        #lista de citas que rellena el modulo logica.py
+        
+        # Uso de setters para garantizar la integridad de los datos desde el inicio
+        self.peso = peso        
+        self.altura = altura    
+        self.seguro = seguro    
+        self.agenda = []        # Lista heterogénea de citas asociadas
 
-        #registra automaticamente el paciente (Mixin)
+        # Lógica de logging: Solo registra si es un ingreso nuevo, no una carga de DB
         if es_nuevo:
             self.registrar_log(f"Nuevo paciente creado: {self.nombre} (DNI: {self._dni})")
+
+    # --- Encapsulamiento con Validación ---
 
     @property
     def peso(self):
@@ -64,7 +73,7 @@ class Paciente(Persona, LogMixin):
     @peso.setter
     def peso(self, valor):
         if valor <= 0:
-            raise DatoInvalidoError(f'La peso {valor} debe ser un numero positivo')
+            raise DatoInvalidoError(f'El peso ({valor}kg) debe ser un número positivo')
         self._peso = valor
 
     @property
@@ -74,29 +83,44 @@ class Paciente(Persona, LogMixin):
     @altura.setter
     def altura(self, valor):
         if valor <= 0:
-            raise DatoInvalidoError(f'La altura {valor} debe ser un numero positivo')
+            raise DatoInvalidoError(f'La altura ({valor}m) debe ser un número positivo')
         self._altura = valor
 
-    #atributo calculado
+    # --- Atributos Calculados (Lógica de Negocio) ---
+
     @property
     def imc(self):
+        """Calcula el Índice de Masa Corporal de forma dinámica."""
         return round(self._peso / (self._altura**2), 2)
 
-    #como se muestra el objeto al imprimir
+    def clasificar_imc(self):
+        """Proporciona una interpretación clínica del IMC (Toque de Data Science)."""
+        valor = self.imc
+        if valor < 18.5: return "Bajo peso"
+        if 18.5 <= valor < 25: return "Peso normal"
+        if 25 <= valor < 30: return "Sobrepeso"
+        return "Obesidad"
+    
+    # --- Representación y Polimorfismo ---
+
     def __str__(self):
         return f"Paciente: {self.nombre} [DNI: {self._dni}]"
 
-    #sobreescribe el de Persona (polimorfismo)
     def mostrar_datos(self):
-        if self.seguro == True:
-            estado_seguro = "Con seguro"
-        else:
-            estado_seguro = "Sin seguro"
+        """Presentación elegante de la ficha médica del paciente."""
+        estado_seguro = "✅ Con seguro médico" if self.seguro else "❌ Sin seguro médico"
+        
         return (
+            f"{'='*40}\n"
             f"{self}\n"
-            f"  Edad  : {self._edad} años\n"
-            f"  Seguro: {estado_seguro}\n"
-            f"  IMC   : {self.imc} (peso={self._peso}kg, altura={self._altura}m)"
+            f"{'-'*40}\n"
+            f" 📋 DATOS GENERALES\n"
+            f"    • Edad: {self._edad} años\n"
+            f"    • Póliza: {estado_seguro}\n"
+            f" ⚖️ MÉTRICAS FÍSICAS\n"
+            f"    • Peso/Altura: {self._peso}kg / {self._altura}m\n"
+            f"    • IMC Actual: {self.imc} -> [{self.clasificar_imc()}]\n"
+            f"{'='*40}"
         )
 
     #Patron Factory
@@ -115,15 +139,25 @@ class Paciente(Persona, LogMixin):
         )
 
 
-#Clase Medico
-class Medico(Persona):
-    def __init__(self, nombre, edad, dni, salario, especialidad, identificacion):
+# Clase Medico actualizada con validaciones de seguridad
+class Medico(Persona, LogMixin): 
+    # 2. Se añade el parámetro por defecto 'es_nuevo=True' para controlar el registro
+    def __init__(self, nombre, edad, dni, salario, especialidad, identificacion, es_nuevo=True):
+        # Llama al constructor de la clase padre (Persona)
         super().__init__(nombre, edad, dni)
-        self.salario = salario               #usa el setter para validar que no sea negativo
-        self.especialidad = especialidad   
-        self.identificacion = identificacion
-        self.agenda = []                     #lista de citas que rellena el modulo logica.py
+        
+        # Al asignar a través de 'self.', se activan automáticamente las validaciones de los @setters
+        self.salario = salario               
+        self.especialidad = especialidad     
+        self.identificacion = identificacion 
+        self.agenda = []                     
+
+        # 3. Registro automático en el log (Utiliza el método heredado de LogMixin)
+        if es_nuevo:
+            self.registrar_log(f"Nuevo médico registrado: Dr./Dra. {self.nombre} (Especialidad: {self._especialidad}, ID: {self._identificacion})")
     
+    # --- Propiedades y Encapsulamiento ---
+
     @property
     def salario(self):
         return self._salario
@@ -131,17 +165,57 @@ class Medico(Persona):
     @salario.setter
     def salario(self, valor):
         if valor < 0:
-            raise DatoInvalidoError(f'El salario {valor} no es puede ser negativo')
+            raise DatoInvalidoError(f'El salario {valor} no puede ser negativo.')
         self._salario = valor
    
-    #como se muestra el objeto al imprimir
+    @property
+    def especialidad(self):
+        return self._especialidad
+
+    @especialidad.setter
+    def especialidad(self, valor):
+        # Valida que la cadena no esté vacía ni contenga solo espacios
+        if not valor or not valor.strip():
+            raise DatoInvalidoError("La especialidad médica no puede estar vacía.")
+        self._especialidad = valor.strip()
+
+    @property
+    def identificacion(self):
+        return self._identificacion
+
+    @identificacion.setter
+    def identificacion(self, valor):
+        if not valor or not valor.strip():
+            raise DatoInvalidoError("El ID de colegiado no puede estar vacío.")
+        self._identificacion = valor.strip()
+
+    # --- Métodos Mágicos y Polimorfismo ---
+
+    # Representación en cadena del objeto
     def __str__(self):
         return f"Dr./Dra. {self.nombre} ({self.especialidad})"
 
-    #sobreescribe el de Persona (polimorfismo)
+    # Sobreescribe el método de la clase base Persona (Polimorfismo)
     def mostrar_datos(self):
         return (
             f"{self}\n"
             f"  Edad         : {self._edad} años\n"
             f"  ID Colegiado : {self.identificacion}\n"
+        )
+
+    # --- Patrones de Diseño ---
+
+    # Patrón Factory para instanciar objetos a partir de un archivo CSV
+    @classmethod
+    def desde_csv(cls, linea_csv):
+        datos = linea_csv.strip().split(",")
+        return cls(
+            nombre=datos[0],
+            edad=int(datos[1]),
+            dni=datos[2],
+            salario=float(datos[3]),
+            especialidad=datos[4],
+            identificacion=datos[5],
+            # 4. CLAVE: Evita generar logs duplicados al cargar datos históricos
+            es_nuevo=False  
         )
