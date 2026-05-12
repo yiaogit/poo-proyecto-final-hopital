@@ -16,6 +16,7 @@ Simulación de un sistema de gestión hospitalaria desarrollado en **Python**, a
 - [🚀 Estructura del Proyecto](#-estructura-del-proyecto)
 - [⚙️ Instalación](#️-instalación)
 - [🖥️ Uso](#️-uso)
+- [❓ Solución de problemas comunes](#-solución-de-problemas-comunes)
 - [👥 Roles y Responsabilidades](#-roles-y-responsabilidades)
 - [📊 Arquitectura del Sistema (UML)](#-arquitectura-del-sistema-uml)
 - [🧪 Tests](#-tests)
@@ -70,31 +71,107 @@ poo-proyecto-final-hospital/
 
 ## ⚙️ Instalación
 
-**Requisitos**: Python 3.10 o superior.
+### Requisitos previos
 
+- **Python 3.10 o superior** — [Descargar Python](https://www.python.org/downloads/)
+- **Git** (opcional, solo si vas a clonar en lugar de descargar el ZIP) — [Descargar Git](https://git-scm.com/downloads)
+
+> 💡 **Verifica tu versión de Python** antes de empezar:
+> ```bash
+> python --version      # Windows
+> python3 --version     # macOS / Linux
+> ```
+> Si la versión es inferior a 3.10, descarga una más reciente del enlace de arriba.
+
+### Obtener el código
+
+**Opción A — Clonar con Git** (recomendado):
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/yiaogit/poo-proyecto-final-hopital.git
 cd poo-proyecto-final-hopital
+```
 
-# 2. Crear entorno virtual
+**Opción B — Descargar ZIP**:
+1. Ve a la página del repositorio
+2. Pulsa el botón verde **Code → Download ZIP**
+3. Descomprime el archivo y abre una terminal dentro de la carpeta resultante
+
+### Instalación según tu sistema operativo
+
+<details>
+<summary><b>🪟 Windows (PowerShell)</b></summary>
+
+```powershell
+# 1. Crear entorno virtual
 python -m venv venv
 
-# 3. Activar el entorno
-# Windows (PowerShell)
+# 2. Activar el entorno
 venv\Scripts\Activate.ps1
-# Windows (CMD)
-venv\Scripts\activate.bat
-# macOS / Linux
-source venv/bin/activate
 
-# 4. Instalar dependencias
+# Si PowerShell rechaza ejecutar scripts, ejecuta UNA VEZ:
+# Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+# 3. Instalar dependencias
 pip install -r requirements.txt
 ```
+
+Verás `(venv)` al inicio de tu prompt cuando el entorno esté activo.
+</details>
+
+<details>
+<summary><b>🪟 Windows (CMD)</b></summary>
+
+```cmd
+python -m venv venv
+venv\Scripts\activate.bat
+pip install -r requirements.txt
+```
+</details>
+
+<details>
+<summary><b>🍎 macOS</b></summary>
+
+```bash
+# 1. Crear entorno virtual (usa python3 en macOS)
+python3 -m venv venv
+
+# 2. Activar el entorno
+source venv/bin/activate
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+```
+
+> Si `python3` no está instalado, instálalo con [Homebrew](https://brew.sh):
+> ```bash
+> brew install python
+> ```
+</details>
+
+<details>
+<summary><b>🐧 Linux (Ubuntu / Debian)</b></summary>
+
+```bash
+# Si Python no está instalado:
+sudo apt update && sudo apt install python3 python3-venv python3-pip -y
+
+# 1. Crear entorno virtual
+python3 -m venv venv
+
+# 2. Activar el entorno
+source venv/bin/activate
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+```
+</details>
 
 ---
 
 ## 🖥️ Uso
+
+> ℹ️ En **macOS/Linux** sustituye `python` por `python3` en todos los comandos.
+> En **Windows** usa `python` tal cual.
 
 ### Interfaz por consola (CLI)
 
@@ -118,6 +195,53 @@ python app.py
 ```
 
 Abre <http://127.0.0.1:5000> en el navegador. La interfaz web reutiliza **exactamente las mismas clases** del modelo de dominio — Flask actúa solo como capa de presentación.
+
+Para detener el servidor, pulsa `Ctrl + C` en la terminal.
+
+### Salir del entorno virtual
+
+Cuando termines de trabajar:
+
+```bash
+deactivate
+```
+
+---
+
+## ❓ Solución de problemas comunes
+
+<details>
+<summary><b>"python no se reconoce como comando" (Windows)</b></summary>
+
+Python no está en el `PATH`. Reinstala desde [python.org](https://www.python.org/downloads/) marcando la casilla **"Add Python to PATH"** durante la instalación.
+</details>
+
+<details>
+<summary><b>"command not found: python" (macOS)</b></summary>
+
+En macOS el comando es `python3`, no `python`. Si tampoco existe, instala vía Homebrew: `brew install python`.
+</details>
+
+<details>
+<summary><b>"jinja2.exceptions.TemplateNotFound: index.html"</b></summary>
+
+La carpeta `templates/` debe estar **al mismo nivel** que `app.py`. Comprueba que existe y contiene los 5 archivos HTML.
+</details>
+
+<details>
+<summary><b>"No se pueden programar citas en el pasado" al ejecutar tests</b></summary>
+
+Esto solo pasaría si usaras versiones antiguas de los tests con fechas fijas. El `test_sistema.py` de este repositorio usa fechas dinámicas y nunca caduca.
+</details>
+
+<details>
+<summary><b>PowerShell: "no se puede cargar el archivo Activate.ps1"</b></summary>
+
+Ejecuta una sola vez con permisos de administrador:
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+</details>
 
 ---
 
