@@ -197,10 +197,21 @@ class Medico(Persona, LogMixin):
 
     # Sobreescribe el método de la clase base Persona (Polimorfismo)
     def mostrar_datos(self):
+        """Presentación elegante de la ficha profesional del médico."""
+        # 逻辑处理：如果日程为空，显示提示信息
+        resumen_agenda = f"{len(self.agenda)} citas programadas" if self.agenda else "Sin citas pendientes"
+        
         return (
-            f"{self}\n"
-            f"  Edad         : {self._edad} años\n"
-            f"  ID Colegiado : {self.identificacion}\n"
+            f"{'='*40}\n"
+            f"{self}\n"  # 调用 __str__ 显示姓名和科室
+            f"{'-'*40}\n"
+            f" 👨‍⚕️ INFORMACIÓN PROFESIONAL\n"
+            f"    • Edad         : {self._edad} años\n"
+            f"    • ID Colegiado : {self.identificacion}\n"
+            f"    • Salario Mens.: {self.salario:.2f} €\n" # :.2f 保证显示两位小数
+            f" 📅 AGENDA Y TURNOS\n"
+            f"    • Estado       : {resumen_agenda}\n"
+            f"{'='*40}"
         )
 
     # --- Patrones de Diseño ---
