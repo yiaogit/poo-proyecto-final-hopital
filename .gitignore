@@ -1,0 +1,36 @@
+# ─── Entornos virtuales ───
+venv/
+env/
+.venv/
+ENV/
+
+# ─── Cache de Python ───
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ─── Distribución ───
+build/
+dist/
+*.egg-info/
+
+# ─── IDE ───
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ─── Logs generados en tiempo de ejecución ───
+hospital_registro.log
+*.log
+
+# ─── Flask ───
+instance/
+.flaskenv
+
+# ─── Tests / coverage ───
+.pytest_cache/
+.coverage
+htmlcov/

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Buscar · Hospital UEV{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-search"></i> Buscar persona por DNI</h5>
+      </div>
+      <div class="card-body">
+        <form method="get" action="{{ url_for('buscar') }}" class="row g-2">
+          <div class="col-sm-9">
+            <input type="text"
+                   name="dni"
+                   value="{{ dni or '' }}"
+                   class="form-control form-control-lg"
+                   placeholder="Introduce el DNI (ej. 12345678A)"
+                   required>
+          </div>
+          <div class="col-sm-3">
+            <button class="btn btn-primary btn-lg w-100" type="submit">
+              <i class="bi bi-search"></i> Buscar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if resultado %}
+      <div class="card shadow-sm border-success">
+        <div class="card-header bg-success text-white">
+          <i class="bi bi-check2-circle"></i> Persona encontrada
+        </div>
+        <div class="card-body">
+          <pre class="mb-3" style="white-space: pre-wrap; font-family: inherit;">{{ resultado.mostrar_datos() }}</pre>
+          <form action="{{ url_for('eliminar', dni=resultado.dni) }}" method="post"
+                onsubmit="return confirm('¿Eliminar a {{ resultado.nombre }}?');">
+            <button type="submit" class="btn btn-outline-danger">
+              <i class="bi bi-trash"></i> Eliminar a esta persona
+            </button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
