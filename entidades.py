@@ -10,7 +10,7 @@ class Persona:
     def __init__(self, nombre, edad, dni):
         self.nombre = nombre
         self.edad = edad    #usa el setter para validar que sea 0-120
-        # Validación de DNI: no puede estar vacío
+        #validación de DNI: no puede estar vacío
         if not dni or not str(dni).strip():
             raise DatoInvalidoError("El DNI no puede estar vacío.")
         self._dni = str(dni).strip()
