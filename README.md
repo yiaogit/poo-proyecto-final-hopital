@@ -74,8 +74,8 @@ poo-proyecto-final-hospital/
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/yiaogit/poo-proyecto-final-hospital.git
-cd poo-proyecto-final-hospital
+git clone https://github.com/yiaogit/poo-proyecto-final-hopital.git
+cd poo-proyecto-final-hopital
 
 # 2. Crear entorno virtual
 python -m venv venv
