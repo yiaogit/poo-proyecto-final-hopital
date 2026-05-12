@@ -496,11 +496,3 @@ Niveles disponibles: `[INFO]` `[CREAR]` `[ELIMINAR]` `[BUSCAR]` `[CITA]` `[ERROR
 Filtrar eventos concretos es trivial: `grep "\[ERROR\]" hospital_registro.log`.
 
 ---
-
-## 📝 Licencia
-
-Este proyecto se distribuye bajo licencia MIT — uso libre con atribución.
-
-## 👨‍💻 Autores
-
-Equipo de 4 integrantes — Proyecto Final de Programación Orientada a Objetos.
