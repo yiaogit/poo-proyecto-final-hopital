@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Médicos · Hospital UEV{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-person-badge"></i> Personal médico ({{ medicos|length }})</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if medicos %}
+        <table class="table table-hover mb-0 align-middle">
+          <thead>
+            <tr>
+              <th class="ps-3">Nombre</th>
+              <th>Especialidad</th>
+              <th>ID Colegiado</th>
+              <th class="text-center">Edad</th>
+              <th class="text-end pe-3">Salario</th>
+              <th class="text-center">Agenda</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for m in medicos %}
+            <tr>
+              <td class="ps-3 fw-medium">Dr./Dra. {{ m.nombre }}</td>
+              <td><span class="badge bg-info-subtle text-info-emphasis">{{ m.especialidad }}</span></td>
+              <td><code>{{ m.identificacion }}</code></td>
+              <td class="text-center">{{ m.edad }}</td>
+              <td class="text-end pe-3">{{ "%.0f"|format(m.salario) }}€</td>
+              <td class="text-center">
+                <span class="badge bg-secondary">{{ m.agenda|length }} cita(s)</span>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="p-4 text-muted text-center mb-0">Aún no hay médicos registrados.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-header text-white" style="background-color:#14b8a6;">
+        <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Nuevo médico</h5>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Nombre completo</label>
+            <input name="nombre" class="form-control" required maxlength="60">
+          </div>
+          <div class="row g-2">
+            <div class="col-7 mb-3">
+              <label class="form-label">DNI</label>
+              <input name="dni" class="form-control" required>
+            </div>
+            <div class="col-5 mb-3">
+              <label class="form-label">Edad</label>
+              <input name="edad" type="number" min="18" max="120" class="form-control" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Especialidad</label>
+            <input name="especialidad" class="form-control" required placeholder="Cardiología, Pediatría...">
+          </div>
+          <div class="row g-2">
+            <div class="col-6 mb-3">
+              <label class="form-label">ID Colegiado</label>
+              <input name="identificacion" class="form-control" required placeholder="COL-006">
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label">Salario (€)</label>
+              <input name="salario" type="number" step="0.01" min="0" class="form-control" required>
+            </div>
+          </div>
+          <button class="btn w-100 text-white" type="submit" style="background-color:#14b8a6;">
+            <i class="bi bi-check2-circle"></i> Registrar médico
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
