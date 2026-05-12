@@ -1,0 +1,142 @@
+{% extends "print_base.html" %}
+{% block doc_title %}Nómina Trimestral · Dr. {{ medico.nombre }}{% endblock %}
+{% block doc_id %}NOM-{{ medico.identificacion }}/{{ year }}-T{{ trimestre }}{% endblock %}
+{% block doc_heading %}Liquidación Trimestral{% endblock %}
+{% block doc_subheading %}Documento contable interno · Personal sanitario{% endblock %}
+{% block ref %}{{ medico.identificacion }}-NOM{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="section-title">Profesional</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Nombre:</span><span class="value">Dr./Dra. {{ medico.nombre }}</span></div>
+    <div class="field"><span class="label">DNI:</span><span class="value">{{ medico.dni }}</span></div>
+    <div class="field"><span class="label">Núm. Colegiado:</span><span class="value">{{ medico.identificacion }}</span></div>
+    <div class="field"><span class="label">Especialidad:</span><span class="value">{{ medico.especialidad }}</span></div>
+    <div class="field"><span class="label">Periodo:</span><span class="value">{{ periodo_desde }} – {{ periodo_hasta }}</span></div>
+    <div class="field"><span class="label">Salario base mensual:</span><span class="value">{{ "%.2f"|format(medico.salario) }} €</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Resumen por mes</div>
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Mes</th>
+        <th class="num">Citas atendidas</th>
+        <th class="num">Ingresos por servicios</th>
+        <th class="num">Salario base</th>
+        <th class="num">Total mensual</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mes in meses %}
+      <tr>
+        <td><strong>{{ mes.nombre }}</strong></td>
+        <td class="num">{{ mes.n_citas }}</td>
+        <td class="num">{{ "%.2f"|format(mes.ingresos) }} €</td>
+        <td class="num">{{ "%.2f"|format(medico.salario) }} €</td>
+        <td class="num"><strong>{{ "%.2f"|format(mes.ingresos + medico.salario) }} €</strong></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td>TOTAL TRIMESTRE</td>
+        <td class="num">{{ total_citas }}</td>
+        <td class="num">{{ "%.2f"|format(total_ingresos) }} €</td>
+        <td class="num">{{ "%.2f"|format(medico.salario * 3) }} €</td>
+        <td class="num" style="font-size: 16px;">{{ "%.2f"|format(total_ingresos + medico.salario * 3) }} €</td>
+      </tr>
+    </tfoot>
+  </table>
+</section>
+
+{% if citas_detalle %}
+<section class="section">
+  <div class="section-title">Detalle de citas atendidas en el trimestre</div>
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Paciente</th>
+        <th>Servicio</th>
+        <th>Seguro</th>
+        <th class="num">Tarifa</th>
+        <th class="num">Cobro</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in citas_detalle %}
+      <tr>
+        <td style="font-family: monospace; font-size: 11px;">{{ c.fecha_hora }}</td>
+        <td>{{ c.paciente.nombre }}</td>
+        <td>{{ (c.tratamiento.tipo | capitalize) if c.tratamiento else 'Sin tratamiento' }}</td>
+        <td>
+          {% if c.paciente.seguro %}
+            <span style="color: #14B8A6;">✓</span>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="num">
+          {% if c.tratamiento %}{{ "%.2f"|format(tarifas[c.tratamiento.tipo]) }} €{% else %}—{% endif %}
+        </td>
+        <td class="num">
+          {% if c.tratamiento %}<strong>{{ "%.2f"|format(c.tratamiento.calcular_costo()) }} €</strong>{% else %}—{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="section-title">Resumen económico</div>
+  <table class="doc-table">
+    <tbody>
+      <tr>
+        <td>Salario base trimestral ({{ "%.2f"|format(medico.salario) }} € × 3 meses)</td>
+        <td class="num">{{ "%.2f"|format(medico.salario * 3) }} €</td>
+      </tr>
+      <tr>
+        <td>Ingresos por servicios prestados ({{ total_citas }} citas)</td>
+        <td class="num">{{ "%.2f"|format(total_ingresos) }} €</td>
+      </tr>
+      <tr class="total-row">
+        <td><strong>BRUTO TOTAL</strong></td>
+        <td class="num" style="font-size: 18px;">{{ "%.2f"|format(total_ingresos + medico.salario * 3) }} €</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="info-box">
+  <strong><i class="bi bi-info-circle-fill"></i> Notas</strong><br>
+  Esta liquidación recoge únicamente las citas con tratamiento asociado registradas
+  en el sistema entre {{ periodo_desde }} y {{ periodo_hasta }}. Las retenciones de
+  IRPF y cotizaciones a la Seguridad Social se aplicarán en el recibo definitivo
+  emitido por el Departamento de Recursos Humanos.
+</div>
+
+<div class="doc-footer" style="border-top: none; margin-top: 40px;">
+  <div class="footer-row">
+    <div class="signature-block">
+      <div class="signature-line">
+        Recursos Humanos<br>
+        <small>Hospital Universitario UEV</small>
+      </div>
+    </div>
+    <div class="signature-block">
+      <div class="signature-line">
+        Conforme · El profesional<br>
+        <small>{{ medico.nombre }}</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

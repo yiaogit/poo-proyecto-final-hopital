@@ -1,0 +1,233 @@
+/* ──────────────────────────────────────────────────────
+   UEV Hospital — Sistema de identidad visual
+   Basado en los colores corporativos de la Universidad Europea
+   ────────────────────────────────────────────────────── */
+
+:root {
+  --uev-red:        #E63946;       /* color principal UEV */
+  --uev-red-dark:   #C42E3A;       /* hover / activo */
+  --uev-red-light:  #FCE4E6;       /* fondos suaves */
+  --uev-navy:       #1B2444;       /* azul corporativo profesional */
+  --uev-navy-dark:  #0F1730;
+  --uev-teal:       #14B8A6;       /* color de acento (seguro/descuento) */
+  --uev-gray-bg:    #F5F7FA;       /* fondo general */
+  --uev-gray-line:  #E2E8F0;
+  --uev-text:       #1F2937;
+  --uev-text-muted: #64748B;
+}
+
+/* ── Base ── */
+body {
+  background-color: var(--uev-gray-bg);
+  color: var(--uev-text);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Navbar UEV ── */
+.navbar-uev {
+  background: linear-gradient(90deg, var(--uev-navy) 0%, var(--uev-navy-dark) 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.6rem 0;
+}
+.navbar-uev .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.navbar-uev .navbar-brand .logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  height: 38px;
+}
+.navbar-uev .navbar-brand .logo-wrap img,
+.navbar-uev .navbar-brand .logo-wrap svg {
+  height: 28px;
+  width: auto;
+}
+.navbar-uev .navbar-brand .subtitle {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 2px;
+}
+.navbar-uev .nav-link {
+  color: rgba(255,255,255,0.85) !important;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+.navbar-uev .nav-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff !important;
+}
+.navbar-uev .nav-link.active {
+  background: var(--uev-red);
+  color: #fff !important;
+}
+
+/* ── Tarjetas ── */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.06);
+}
+.card-header {
+  background: #fff;
+  border-bottom: 1px solid var(--uev-gray-line);
+  font-weight: 600;
+  color: var(--uev-navy);
+  padding: 0.9rem 1.1rem;
+}
+.card-header.bg-uev-red {
+  background: var(--uev-red);
+  color: #fff;
+  border-bottom: none;
+}
+.card-header.bg-uev-navy {
+  background: var(--uev-navy);
+  color: #fff;
+  border-bottom: none;
+}
+
+/* ── Stats Cards (Dashboard) ── */
+.card-stat {
+  border-left: 4px solid var(--uev-red);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+.card-stat.accent-teal  { border-left-color: var(--uev-teal); }
+.card-stat.accent-navy  { border-left-color: var(--uev-navy); }
+.card-stat.accent-amber { border-left-color: #F59E0B; }
+.stat-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--uev-navy);
+}
+.stat-label {
+  color: var(--uev-text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+/* ── Botones UEV ── */
+.btn-uev-primary {
+  background: var(--uev-red);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+.btn-uev-primary:hover {
+  background: var(--uev-red-dark);
+  color: #fff;
+}
+.btn-uev-secondary {
+  background: var(--uev-navy);
+  color: #fff;
+  border: none;
+}
+.btn-uev-secondary:hover {
+  background: var(--uev-navy-dark);
+  color: #fff;
+}
+
+/* ── Tablas ── */
+.table thead th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--uev-text-muted);
+  font-weight: 600;
+  background: #FAFBFC;
+  border-bottom: 2px solid var(--uev-gray-line);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.table tbody tr:hover {
+  background: var(--uev-red-light);
+}
+
+/* ── Badges IMC ── */
+.badge-imc-bajo    { background-color: #6c757d; color: #fff; }
+.badge-imc-normal  { background-color: #198754; color: #fff; }
+.badge-imc-sobre   { background-color: #fd7e14; color: #fff; }
+.badge-imc-obesid  { background-color: #dc3545; color: #fff; }
+
+/* ── Footer ── */
+.footer-uev {
+  color: var(--uev-text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  border-top: 1px solid var(--uev-gray-line);
+  margin-top: 3rem;
+}
+.footer-uev .footer-brand {
+  color: var(--uev-navy);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+/* ── Alertas ── */
+.alert {
+  border: none;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+.alert-success { border-left-color: #198754; background: #d1e7dd; }
+.alert-warning { border-left-color: #ffc107; background: #fff3cd; }
+.alert-danger  { border-left-color: var(--uev-red); background: var(--uev-red-light); }
+.alert-info    { border-left-color: var(--uev-teal); background: #ccfbf1; }
+
+/* ── Sello / Bloque de cita ── */
+.cita-item {
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--uev-red);
+  background: var(--uev-gray-bg);
+  margin-bottom: 0.5rem;
+  border-radius: 0 6px 6px 0;
+}
+
+/* ════════════════════════════════════════════════════
+   PRINT STYLES — Documentos hospitalarios profesionales
+   ════════════════════════════════════════════════════ */
+@media print {
+  body {
+    background: #fff !important;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 11pt;
+    color: #000;
+  }
+  /* Ocultar todo lo que no es contenido imprimible */
+  nav, .navbar-uev, .footer-uev, .no-print, .btn,
+  .alert, form[onsubmit] { display: none !important; }
+
+  @page {
+    size: A4;
+    margin: 1.8cm 1.5cm;
+  }
+  .print-only { display: block !important; }
+  .print-page { page-break-after: always; }
+  .print-page:last-child { page-break-after: auto; }
+  table { page-break-inside: avoid; }
+}
+
+/* Por defecto, los elementos solo-impresión están ocultos en pantalla */
+.print-only { display: none; }

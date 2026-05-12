@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Hospital UEV{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h3 mb-1">{{ hospital.nombre }}</h1>
+    <p class="text-muted mb-0">Panel de control general</p>
+  </div>
+  <span class="badge bg-success-subtle text-success-emphasis fs-6">
+    <i class="bi bi-broadcast"></i> Sistema activo
+  </span>
+</div>
+
+<!-- Tarjetas de estadísticas -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card card-stat">
+      <div class="card-body">
+        <div class="stat-label"><i class="bi bi-person-heart"></i> Pacientes</div>
+        <div class="stat-value">{{ n_pacientes }}</div>
+        <a href="{{ url_for('pacientes') }}" class="small text-decoration-none">Ver listado →</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-stat accent-teal">
+      <div class="card-body">
+        <div class="stat-label"><i class="bi bi-person-badge"></i> Médicos</div>
+        <div class="stat-value">{{ n_medicos }}</div>
+        <a href="{{ url_for('medicos') }}" class="small text-decoration-none">Ver listado →</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-stat accent-amber">
+      <div class="card-body">
+        <div class="stat-label"><i class="bi bi-calendar-event"></i> Citas registradas</div>
+        <div class="stat-value">{{ n_citas }}</div>
+        <a href="{{ url_for('citas') }}" class="small text-decoration-none">Gestionar agenda →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Próximas citas -->
+<div class="card shadow-sm">
+  <div class="card-header bg-white">
+    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Próximas citas</h5>
+  </div>
+  <div class="card-body p-0">
+    {% if proximas %}
+      <table class="table mb-0 align-middle">
+        <thead><tr>
+          <th class="ps-3">Fecha</th><th>Paciente</th><th>Médico</th><th>Motivo</th><th>Tratamiento</th>
+        </tr></thead>
+        <tbody>
+        {% for c in proximas %}
+          <tr>
+            <td class="ps-3"><i class="bi bi-clock"></i> {{ c.fecha_hora }}</td>
+            <td>{{ c.paciente.nombre }}</td>
+            <td>{{ c.medico.nombre }} <small class="text-muted">({{ c.medico.especialidad }})</small></td>
+            <td>{{ c.motivo }}</td>
+            <td>
+              {% if c.tratamiento %}
+                <span class="badge bg-info-subtle text-info-emphasis">
+                  {{ c.tratamiento.tipo|capitalize }} · {{ "%.2f"|format(c.tratamiento.calcular_costo()) }}€
+                </span>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="p-4 text-muted mb-0 text-center">
+        <i class="bi bi-info-circle"></i> No hay citas programadas todavía.
+        <a href="{{ url_for('citas') }}">Programa la primera →</a>
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

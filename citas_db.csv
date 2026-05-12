@@ -1,0 +1,55 @@
+10112233U,COL-001,09/04/2026 09:30,Control hipertensión,consulta,Procedimiento consulta programado
+20223344V,COL-001,27/03/2026 15:00,Dolor torácico,analisis,Procedimiento analisis programado
+77889900Q,COL-001,24/02/2026 17:00,Revisión post-infarto,revision,Procedimiento revision programado
+99001122S,COL-001,03/07/2026 09:00,Seguimiento arritmia,analisis,Procedimiento analisis programado
+78901234G,COL-001,30/03/2026 15:00,Electrocardiograma anual,,
+00112233T,COL-002,26/06/2026 09:30,Otitis recurrente,revision,Procedimiento revision programado
+34567890C,COL-002,20/05/2026 10:00,Vacunación infantil,,
+34567890C,COL-002,10/06/2026 10:30,Control crecimiento,vacuna,Procedimiento vacuna programado
+67890123F,COL-002,19/08/2026 14:00,Control crecimiento,,
+20223344V,COL-002,19/03/2026 11:00,Vacunación infantil,vacuna,Procedimiento vacuna programado
+01001122D,COL-003,03/06/2026 14:00,Evaluación migraña,,
+60667788Z,COL-003,22/07/2026 15:30,Cefalea crónica,cirugia,Procedimiento cirugia programado
+90990011C,COL-003,22/07/2026 12:30,Mareos y vértigo,,
+10112233U,COL-003,26/06/2026 11:00,Pérdida memoria,cirugia,Procedimiento cirugia programado
+44556677N,COL-003,03/09/2026 14:00,Evaluación migraña,consulta,Procedimiento consulta programado
+50556677Y,COL-004,08/04/2026 11:00,Apendicectomía consulta,revision,Procedimiento revision programado
+33445566M,COL-004,08/10/2026 17:30,Valoración prequirúrgica,consulta,Procedimiento consulta programado
+20223344V,COL-004,04/08/2026 10:30,Apendicectomía consulta,consulta,Procedimiento consulta programado
+40445566X,COL-004,25/06/2026 17:00,Valoración prequirúrgica,,
+01234567J,COL-004,28/10/2026 12:00,Hernia inguinal,,
+88990011R,COL-005,11/02/2026 14:30,Revisión de lunares,vacuna,Procedimiento vacuna programado
+90990011C,COL-005,12/03/2026 12:00,Revisión de lunares,,
+70778899A,COL-005,18/03/2026 17:00,Acné severo,cirugia,Procedimiento cirugia programado
+67890123F,COL-005,26/06/2026 17:30,Acné severo,,
+50556677Y,COL-005,20/07/2026 15:30,Lesión dérmica,,
+55667788O,COL-006,13/04/2026 12:00,Esguince de tobillo,cirugia,Procedimiento cirugia programado
+88990011R,COL-006,08/06/2026 12:00,Esguince de tobillo,,
+23456789B,COL-006,08/06/2026 10:00,Revisión rodilla,analisis,Procedimiento analisis programado
+90123456I,COL-006,15/06/2026 16:30,Dolor lumbar,revision,Procedimiento revision programado
+22334455L,COL-006,15/09/2026 15:30,Esguince de tobillo,consulta,Procedimiento consulta programado
+33445566M,COL-001,03/08/2026 10:00,Control hipertensión,revision,Procedimiento revision programado
+44556677N,COL-003,15/05/2026 13:30,Evaluación migraña,,
+55667788O,COL-002,02/04/2026 09:00,Revisión rutinaria,,
+67890123F,COL-004,07/09/2026 16:30,Seguimiento postoperatorio,,
+67890123F,COL-001,24/08/2026 09:30,Electrocardiograma anual,,
+01234567J,COL-008,15/09/2026 17:30,Resultado biopsia,analisis,Procedimiento analisis programado
+99001122S,COL-001,21/07/2026 09:00,Revisión post-infarto,cirugia,Procedimiento cirugia programado
+23456789B,COL-003,29/10/2026 10:00,Cefalea crónica,analisis,Procedimiento analisis programado
+45678901D,COL-007,17/06/2026 09:00,Consulta menopausia,cirugia,Procedimiento cirugia programado
+11223344K,COL-009,24/06/2026 12:30,Seguimiento depresión,analisis,Procedimiento analisis programado
+10112233U,COL-011,14/07/2026 16:30,Revisión visión,cirugia,Procedimiento cirugia programado
+45678901D,COL-010,20/03/2026 17:00,Reacción alérgica,vacuna,Procedimiento vacuna programado
+90990011C,COL-002,16/06/2026 14:30,Vacunación infantil,cirugia,Procedimiento cirugia programado
+01234567J,COL-012,14/07/2026 10:00,Consulta dolor crónico,consulta,Procedimiento consulta programado
+88990011R,COL-012,01/05/2026 13:30,Seguimiento postanestesia,vacuna,Procedimiento vacuna programado
+20223344V,COL-004,26/06/2026 17:30,Hernia inguinal,,
+34567890C,COL-001,15/09/2026 13:00,Dolor torácico,analisis,Procedimiento analisis programado
+90123456I,COL-011,04/05/2026 16:30,Renovación gafas,consulta,Procedimiento consulta programado
+90990011C,COL-012,28/04/2026 17:00,Consulta dolor crónico,analisis,Procedimiento analisis programado
+56789012E,COL-007,04/03/2026 13:30,Revisión anual,,
+20223344V,COL-004,18/06/2026 10:30,Apendicectomía consulta,,
+56789012E,COL-012,12/06/2026 11:00,Consulta dolor crónico,vacuna,Procedimiento vacuna programado
+60667788Z,COL-007,18/06/2026 13:00,Revisión anual,consulta,Procedimiento consulta programado
+89012345H,COL-008,17/07/2026 12:00,Seguimiento oncológico,revision,Procedimiento revision programado
+90123456I,COL-006,18/03/2026 13:30,Fractura seguimiento,cirugia,Procedimiento cirugia programado

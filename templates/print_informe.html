@@ -1,0 +1,130 @@
+{% extends "print_base.html" %}
+{% block doc_title %}Informe Clínico · {{ paciente.nombre }}{% endblock %}
+{% block doc_id %}INF-{{ paciente.dni[:8] }}/{{ year }}{% endblock %}
+{% block doc_heading %}Informe Clínico — Valoración Antropométrica{% endblock %}
+{% block doc_subheading %}Documento clínico de uso médico{% endblock %}
+{% block ref %}{{ paciente.dni }}-INF{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="section-title">Identificación del paciente</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Nombre y apellidos:</span><span class="value">{{ paciente.nombre }}</span></div>
+    <div class="field"><span class="label">DNI:</span><span class="value">{{ paciente.dni }}</span></div>
+    <div class="field"><span class="label">Edad:</span><span class="value">{{ paciente.edad }} años</span></div>
+    <div class="field"><span class="label">Cobertura sanitaria:</span><span class="value">
+      {% if paciente.seguro %}Con seguro privado{% else %}Particular{% endif %}
+    </span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Datos antropométricos</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Peso:</span><span class="value">{{ paciente.peso }} kg</span></div>
+    <div class="field"><span class="label">Talla:</span><span class="value">{{ paciente.altura }} m</span></div>
+    <div class="field"><span class="label">Índice de Masa Corporal (IMC):</span><span class="value" style="font-size: 16px; color: #1B2444;">{{ paciente.imc }} kg/m²</span></div>
+    <div class="field"><span class="label">Clasificación OMS:</span><span class="value">
+      {% set cls = paciente.clasificar_imc() %}
+      {% if cls == "Bajo peso" %}
+        <span style="color: #6B7280;">⬇ {{ cls }}</span>
+      {% elif cls == "Peso normal" %}
+        <span style="color: #198754;">✓ {{ cls }}</span>
+      {% elif cls == "Sobrepeso" %}
+        <span style="color: #F59E0B;">⚠ {{ cls }}</span>
+      {% else %}
+        <span style="color: #E63946;">⚠ {{ cls }}</span>
+      {% endif %}
+    </span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Interpretación clínica (criterios OMS)</div>
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Categoría</th>
+        <th class="num">Rango IMC (kg/m²)</th>
+        <th>Riesgo asociado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr {% if paciente.clasificar_imc() == "Bajo peso" %}style="background:#FCE4E6;font-weight:600;"{% endif %}>
+        <td>Bajo peso</td>
+        <td class="num">&lt; 18,5</td>
+        <td>Posible déficit nutricional</td>
+      </tr>
+      <tr {% if paciente.clasificar_imc() == "Peso normal" %}style="background:#D1FAE5;font-weight:600;"{% endif %}>
+        <td>Peso normal</td>
+        <td class="num">18,5 – 24,9</td>
+        <td>Riesgo cardiovascular bajo</td>
+      </tr>
+      <tr {% if paciente.clasificar_imc() == "Sobrepeso" %}style="background:#FEF3C7;font-weight:600;"{% endif %}>
+        <td>Sobrepeso</td>
+        <td class="num">25,0 – 29,9</td>
+        <td>Riesgo cardiovascular aumentado</td>
+      </tr>
+      <tr {% if paciente.clasificar_imc() == "Obesidad" %}style="background:#FCE4E6;font-weight:600;"{% endif %}>
+        <td>Obesidad</td>
+        <td class="num">≥ 30,0</td>
+        <td>Riesgo cardiovascular alto</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section">
+  <div class="section-title">Recomendaciones</div>
+  <div class="info-box">
+    {% set cls = paciente.clasificar_imc() %}
+    {% if cls == "Bajo peso" %}
+      Se recomienda valoración nutricional y descartar patologías subyacentes que justifiquen
+      el bajo peso. Considerar ingesta calórica adecuada y, si procede, derivación a Endocrinología.
+    {% elif cls == "Peso normal" %}
+      Mantener hábitos de vida saludables: dieta equilibrada y actividad física regular
+      (mínimo 150 min/semana de ejercicio aeróbico moderado).
+    {% elif cls == "Sobrepeso" %}
+      Se recomienda intervención dietética, aumento de actividad física y seguimiento
+      periódico. Valorar derivación a Endocrinología si coexisten otros factores de
+      riesgo cardiovascular.
+    {% else %}
+      Se recomienda derivación a Endocrinología y Nutrición. Cribado de complicaciones
+      asociadas (HTA, diabetes tipo 2, dislipemia, apnea del sueño). Valoración de
+      tratamiento farmacológico o quirúrgico según protocolo.
+    {% endif %}
+  </div>
+</section>
+
+{% if paciente.agenda %}
+<section class="section">
+  <div class="section-title">Citas asociadas en el sistema</div>
+  <table class="doc-table">
+    <thead><tr><th>Fecha</th><th>Especialidad</th><th>Motivo</th></tr></thead>
+    <tbody>
+      {% for c in paciente.agenda | sort %}
+      <tr>
+        <td>{{ c.fecha_hora }}</td>
+        <td>{{ c.medico.especialidad }}</td>
+        <td>{{ c.motivo }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+<div class="doc-footer" style="border-top: none; margin-top: 30px;">
+  <div class="footer-row">
+    <div></div>
+    <div class="signature-block">
+      <div class="signature-line">
+        Firma y sello del facultativo<br>
+        <small>(Hospital Universitario UEV)</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
