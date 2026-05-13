@@ -1,0 +1,97 @@
+{% extends "print_base.html" %}
+{% block doc_title %}Factura · {{ cita.paciente.nombre }}{% endblock %}
+{% block doc_id %}FACT-{{ "%04d"|format(cita_idx) }}/{{ year }}{% endblock %}
+{% block doc_heading %}Factura de Servicios{% endblock %}
+{% block doc_subheading %}Documento contable conforme a la normativa española{% endblock %}
+{% block ref %}{{ cita_ref }}{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="section-title">Cliente / Paciente</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Nombre:</span><span class="value">{{ cita.paciente.nombre }}</span></div>
+    <div class="field"><span class="label">DNI:</span><span class="value">{{ cita.paciente.dni }}</span></div>
+    <div class="field"><span class="label">Fecha del servicio:</span><span class="value">{{ cita.fecha_hora }}</span></div>
+    <div class="field"><span class="label">Régimen:</span><span class="value">
+      {% if cita.paciente.seguro %}
+        <span style="color: #14B8A6;">Asegurado (40% de descuento)</span>
+      {% else %}
+        Particular
+      {% endif %}
+    </span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Detalle de servicios</div>
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th style="width: 50%;">Concepto</th>
+        <th>Especialidad</th>
+        <th class="num">Tarifa base</th>
+        <th class="num">Descuento</th>
+        <th class="num">Importe</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ (cita.tratamiento.tipo | capitalize) if cita.tratamiento else 'Consulta médica' }}</strong><br>
+          <small style="color: #6B7280;">{{ cita.motivo }}</small>
+        </td>
+        <td>{{ cita.medico.especialidad }}</td>
+        <td class="num">{{ "%.2f"|format(tarifa_base) }} €</td>
+        <td class="num">
+          {% if cita.paciente.seguro %}
+            <span style="color: #14B8A6;">-{{ "%.2f"|format(descuento) }} €</span>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="num"><strong>{{ "%.2f"|format(subtotal) }} €</strong></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="num" style="border-top: 2px solid #1B2444;">Subtotal</td>
+        <td class="num" style="border-top: 2px solid #1B2444;">{{ "%.2f"|format(subtotal) }} €</td>
+      </tr>
+      <tr>
+        <td colspan="4" class="num">IVA (exento - servicios sanitarios Art. 20.1.3º LIVA)</td>
+        <td class="num">0,00 €</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="4" class="num">TOTAL A PAGAR</td>
+        <td class="num" style="font-size: 16px;">{{ "%.2f"|format(total) }} €</td>
+      </tr>
+    </tfoot>
+  </table>
+</section>
+
+{% if cita.paciente.seguro %}
+<div class="info-box success">
+  <strong><i class="bi bi-shield-check"></i> Aplicación del descuento por seguro</strong><br>
+  Como paciente con seguro médico vigente, se ha aplicado un descuento del 40%
+  sobre la tarifa base ({{ "%.2f"|format(tarifa_base) }} € → {{ "%.2f"|format(total) }} €).
+  Ahorro total: <strong>{{ "%.2f"|format(descuento) }} €</strong>.
+</div>
+{% endif %}
+
+<section class="section">
+  <div class="section-title">Datos del prestador</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Centro:</span><span class="value">Hospital Universitario UEV</span></div>
+    <div class="field"><span class="label">CIF:</span><span class="value">A-78XXXXXX</span></div>
+    <div class="field"><span class="label">Profesional:</span><span class="value">Dr./Dra. {{ cita.medico.nombre }}</span></div>
+    <div class="field"><span class="label">Núm. Colegiado:</span><span class="value">{{ cita.medico.identificacion }}</span></div>
+  </div>
+</section>
+
+<div class="info-box">
+  <strong>Forma de pago:</strong> Pago en mostrador de admisión o transferencia bancaria a la cuenta
+  ES00 0000 0000 0000 0000 0000 (concepto: nº de factura).
+</div>
+
+{% endblock %}

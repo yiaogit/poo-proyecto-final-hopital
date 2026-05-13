@@ -1,0 +1,114 @@
+{% extends "print_base.html" %}
+{% block doc_title %}Agenda · Dr. {{ medico.nombre }}{% endblock %}
+{% block doc_id %}AGD-{{ medico.identificacion }}/{{ year }}{% endblock %}
+{% block doc_heading %}Agenda Profesional{% endblock %}
+{% block doc_subheading %}Documento interno · Uso médico-administrativo{% endblock %}
+{% block ref %}{{ medico.identificacion }}-AGD{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="section-title">Datos del profesional</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Nombre:</span><span class="value">Dr./Dra. {{ medico.nombre }}</span></div>
+    <div class="field"><span class="label">DNI:</span><span class="value">{{ medico.dni }}</span></div>
+    <div class="field"><span class="label">Núm. Colegiado:</span><span class="value">{{ medico.identificacion }}</span></div>
+    <div class="field"><span class="label">Especialidad:</span><span class="value">{{ medico.especialidad }}</span></div>
+    <div class="field"><span class="label">Edad:</span><span class="value">{{ medico.edad }} años</span></div>
+    <div class="field"><span class="label">Total citas registradas:</span><span class="value">{{ medico.agenda | length }}</span></div>
+  </div>
+</section>
+
+{% if citas_pasadas %}
+<section class="section">
+  <div class="section-title">Citas realizadas ({{ citas_pasadas | length }})</div>
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Paciente</th>
+        <th>DNI</th>
+        <th>Motivo</th>
+        <th>Tratamiento</th>
+        <th class="num">Importe</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in citas_pasadas %}
+      <tr>
+        <td style="font-family: monospace; font-size: 11px;">{{ c.fecha_hora }}</td>
+        <td>{{ c.paciente.nombre }}</td>
+        <td style="font-family: monospace; font-size: 11px;">{{ c.paciente.dni }}</td>
+        <td>{{ c.motivo }}</td>
+        <td>
+          {% if c.tratamiento %}
+            {{ c.tratamiento.tipo | capitalize }}
+          {% else %}
+            <span style="color: #9CA3AF;">—</span>
+          {% endif %}
+        </td>
+        <td class="num">
+          {% if c.tratamiento %}
+            {{ "%.2f"|format(c.tratamiento.calcular_costo()) }} €
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if citas_futuras %}
+<section class="section">
+  <div class="section-title">Citas programadas ({{ citas_futuras | length }})</div>
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Paciente</th>
+        <th>DNI</th>
+        <th>Edad</th>
+        <th>Motivo</th>
+        <th>Tratamiento previsto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in citas_futuras %}
+      <tr>
+        <td style="font-family: monospace; font-size: 11px;">{{ c.fecha_hora }}</td>
+        <td>{{ c.paciente.nombre }}</td>
+        <td style="font-family: monospace; font-size: 11px;">{{ c.paciente.dni }}</td>
+        <td class="num">{{ c.paciente.edad }}</td>
+        <td>{{ c.motivo }}</td>
+        <td>
+          {% if c.tratamiento %}
+            {{ c.tratamiento.tipo | capitalize }}
+          {% else %}
+            <span style="color: #9CA3AF;">Por determinar</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if not medico.agenda %}
+<div class="info-box">
+  Este profesional no tiene citas registradas en el sistema.
+</div>
+{% endif %}
+
+<div class="info-box">
+  <strong><i class="bi bi-lock-fill"></i> Confidencialidad</strong><br>
+  Este documento contiene datos de carácter personal sujetos a la LOPDGDD 3/2018
+  y al RGPD UE 2016/679. Está restringido al personal sanitario y administrativo
+  autorizado del Hospital UEV. Prohibida su reproducción o difusión sin
+  autorización expresa.
+</div>
+
+{% endblock %}

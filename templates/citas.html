@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Citas · Hospital UEV{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <!-- Listado de citas -->
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Agenda completa ({{ citas|length }})</h5>
+      </div>
+      <div class="card-body p-0">
+        {% if citas %}
+        <table class="table table-hover mb-0 align-middle">
+          <thead>
+            <tr>
+              <th class="ps-3">Fecha y hora</th>
+              <th>Paciente</th>
+              <th>Médico</th>
+              <th>Tratamiento</th>
+              <th class="text-center pe-3">Imprimir</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for c in citas %}
+            <tr>
+              <td class="ps-3">
+                <i class="bi bi-clock-history"></i> {{ c.fecha_hora }}
+              </td>
+              <td>
+                {{ c.paciente.nombre }}
+                {% if c.paciente.seguro %}
+                  <i class="bi bi-shield-check text-success" title="Con seguro"></i>
+                {% endif %}
+              </td>
+              <td>
+                <small>{{ c.medico.nombre }}<br>
+                  <span class="text-muted">{{ c.medico.especialidad }}</span>
+                </small>
+              </td>
+              <td>
+                {% if c.tratamiento %}
+                  <span class="badge bg-info-subtle text-info-emphasis">
+                    {{ c.tratamiento.tipo|capitalize }}
+                  </span>
+                  <strong>{{ "%.2f"|format(c.tratamiento.calcular_costo()) }}€</strong>
+                {% else %}
+                  <span class="text-muted small">Sin tratamiento</span>
+                {% endif %}
+                <br><small class="text-muted">{{ c.motivo }}</small>
+              </td>
+              <td class="text-center pe-3">
+                <a href="{{ url_for('print_cita', cita_idx=loop.index0) }}" target="_blank"
+                   class="btn btn-sm btn-outline-secondary" title="Comprobante de cita">
+                  <i class="bi bi-calendar-event"></i>
+                </a>
+                {% if c.tratamiento %}
+                <a href="{{ url_for('print_factura', cita_idx=loop.index0) }}" target="_blank"
+                   class="btn btn-sm btn-outline-secondary" title="Factura">
+                  <i class="bi bi-receipt"></i>
+                </a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="p-4 text-muted text-center mb-0">Aún no hay citas programadas.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de nueva cita -->
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-uev-red">
+        <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Programar cita</h5>
+      </div>
+      <div class="card-body">
+        {% if not pacientes or not medicos %}
+          <div class="alert alert-warning small mb-0">
+            <i class="bi bi-exclamation-triangle"></i>
+            Necesitas registrar al menos un paciente y un médico antes de poder programar citas.
+          </div>
+        {% else %}
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Paciente</label>
+            <select name="paciente" class="form-select" required>
+              <option value="" disabled selected>Selecciona...</option>
+              {% for p in pacientes %}
+                <option value="{{ p.dni }}">{{ p.nombre }} (DNI: {{ p.dni }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Médico</label>
+            <select name="medico" class="form-select" required>
+              <option value="" disabled selected>Selecciona...</option>
+              {% for m in medicos %}
+                <option value="{{ m.identificacion }}">{{ m.nombre }} — {{ m.especialidad }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fecha y hora</label>
+            <input name="fecha" type="datetime-local" class="form-control" required>
+            <small class="text-muted">No se aceptan fechas en el pasado.</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Motivo</label>
+            <input name="motivo" class="form-control" required maxlength="100" placeholder="Revisión, control, dolor...">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tratamiento <span class="text-muted small">(opcional)</span></label>
+            <select name="tipo_tratamiento" class="form-select">
+              <option value="">— Sin tratamiento —</option>
+              {% for nombre, precio in tarifas.items() %}
+                <option value="{{ nombre }}">{{ nombre|capitalize }} ({{ "%.0f"|format(precio) }}€)</option>
+              {% endfor %}
+            </select>
+            <small class="text-muted">Los pacientes con seguro reciben un 40% de descuento.</small>
+          </div>
+          <button class="btn btn-uev-primary w-100" type="submit">
+            <i class="bi bi-check2-circle"></i> Crear cita
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

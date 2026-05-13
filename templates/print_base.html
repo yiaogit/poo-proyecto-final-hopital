@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>{% block doc_title %}Documento UEV{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    /* ───── Pantalla ───── */
+    body {
+      font-family: 'Inter', 'Helvetica', sans-serif;
+      background: #f0f2f5;
+      color: #1f2937;
+      margin: 0;
+      padding: 30px 0;
+    }
+    .print-toolbar {
+      max-width: 21cm;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .print-toolbar a, .print-toolbar button {
+      background: #E63946; color: #fff; border: none;
+      padding: 8px 18px; border-radius: 6px; font-weight: 600;
+      cursor: pointer; text-decoration: none; font-size: 14px;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .print-toolbar a:hover, .print-toolbar button:hover { background: #C42E3A; }
+    .print-toolbar .back-btn { background: #6B7280; }
+    .print-toolbar .back-btn:hover { background: #4B5563; }
+    .print-toolbar .pdf-btn { background: #1B2444; }
+    .print-toolbar .pdf-btn:hover { background: #0F1730; }
+
+    /* ───── Hoja A4 ───── */
+    .document {
+      max-width: 21cm;
+      min-height: 28cm;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2cm 2cm;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+
+    /* ───── Cabecera UEV ───── */
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #E63946;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+    }
+    .doc-header .logo {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .doc-header .logo .square {
+      width: 56px; height: 56px;
+      background: #E63946; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 30px; font-style: italic;
+      font-family: Arial, sans-serif;
+    }
+    .doc-header .logo .institution {
+      font-size: 18px; font-weight: 700; color: #1B2444; line-height: 1.1;
+    }
+    .doc-header .logo .institution .sub {
+      font-size: 12px; font-weight: 500; color: #6B7280;
+      display: block; margin-top: 2px;
+    }
+    .doc-header .doc-meta {
+      text-align: right; font-size: 11px; color: #6B7280;
+    }
+    .doc-header .doc-meta .doc-id {
+      font-family: 'Courier New', monospace;
+      font-size: 13px; font-weight: 700; color: #1B2444;
+      margin-bottom: 4px;
+    }
+
+    /* ───── Título del documento ───── */
+    .doc-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #1B2444;
+      margin: 0 0 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .doc-subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #6B7280;
+      margin-bottom: 30px;
+    }
+
+    /* ───── Secciones ───── */
+    .section {
+      margin-bottom: 22px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #E63946;
+      border-bottom: 1px solid #E2E8F0;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 30px;
+    }
+    .field-grid.cols-1 { grid-template-columns: 1fr; }
+    .field {
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dotted #E2E8F0;
+    }
+    .field .label {
+      color: #6B7280;
+      font-weight: 500;
+    }
+    .field .value {
+      color: #1F2937;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* ───── Tablas (factura, agenda, nómina) ───── */
+    table.doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    table.doc-table thead {
+      background: #1B2444;
+      color: #fff;
+    }
+    table.doc-table th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    table.doc-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    table.doc-table tbody tr:nth-child(even) {
+      background: #FAFBFC;
+    }
+    table.doc-table .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .total-row {
+      font-weight: 700;
+      background: #FCE4E6 !important;
+      color: #1B2444;
+      font-size: 13px;
+    }
+
+    /* ───── Pie de página ───── */
+    .doc-footer {
+      margin-top: 50px;
+      padding-top: 15px;
+      border-top: 1px solid #E2E8F0;
+      font-size: 10px;
+      color: #6B7280;
+      line-height: 1.5;
+    }
+    .doc-footer .footer-row {
+      display: flex; justify-content: space-between;
+      align-items: flex-end;
+    }
+    .signature-block {
+      width: 35%; text-align: center;
+    }
+    .signature-line {
+      border-top: 1px solid #1F2937;
+      margin-top: 50px;
+      padding-top: 4px;
+      font-size: 10px;
+      color: #6B7280;
+    }
+
+    /* ───── Sello / aviso ───── */
+    .info-box {
+      background: #F5F7FA;
+      border-left: 3px solid #E63946;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #4B5563;
+      margin: 15px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .info-box.success {
+      border-left-color: #14B8A6;
+      background: #F0FDFA;
+    }
+
+    /* ───── Impresión ───── */
+    @media print {
+      /* Forzar impresión de colores y fondos (UEV brand) en lugar de blanco/negro.
+         Sin esto, los navegadores omiten el rojo UEV y los fondos por defecto. */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+      body { background: #fff !important; padding: 0; }
+      .print-toolbar { display: none !important; }
+      .document {
+        box-shadow: none;
+        margin: 0;
+        max-width: none;
+        padding: 0;
+        min-height: auto;
+      }
+      @page {
+        size: A4;
+        margin: 1.5cm 1.5cm;
+      }
+      .page-break { page-break-before: always; }
+    }
+  </style>
+  {% block extra_styles %}{% endblock %}
+</head>
+<body>
+
+<div class="print-toolbar">
+  <a href="{{ request.referrer or url_for('index') }}" class="back-btn">
+    <i class="bi bi-arrow-left"></i> Volver
+  </a>
+  <div style="display: flex; gap: 10px;">
+    <button onclick="window.print()">
+      <i class="bi bi-printer-fill"></i> Imprimir
+    </button>
+    {% block pdf_button %}
+    <button type="button" onclick="guardarComoPDF()" class="pdf-btn">
+      <i class="bi bi-file-earmark-pdf-fill"></i> Guardar como PDF
+    </button>
+    {% endblock %}
+  </div>
+</div>
+
+<script>
+  // "Guardar como PDF" abre el diálogo de impresión del navegador.
+  // El usuario solo tiene que elegir "Guardar como PDF" como destino,
+  // disponible nativamente en Windows, macOS y Linux.
+  function guardarComoPDF() {
+    // Pequeño aviso solo la primera vez en esta sesión
+    if (!sessionStorage.getItem('uev_pdf_hint_shown')) {
+      alert(
+        "📄 Para guardar como PDF:\n\n" +
+        "1. En la ventana que aparece, elige como 'Destino' la opción " +
+        "'Guardar como PDF' (Chrome/Edge) o 'PDF' (Safari/Firefox).\n" +
+        "2. Pulsa 'Guardar' o 'Imprimir'.\n\n" +
+        "Funciona en Windows, macOS y Linux sin necesidad de instalar nada."
+      );
+      sessionStorage.setItem('uev_pdf_hint_shown', '1');
+    }
+    window.print();
+  }
+</script>
+
+<div class="document">
+  <header class="doc-header">
+    <div class="logo">
+      <div class="square">ue</div>
+      <div class="institution">
+        Hospital Universitario UEV
+        <span class="sub">Universidad Europea de Madrid</span>
+      </div>
+    </div>
+    <div class="doc-meta">
+      <div class="doc-id">{% block doc_id %}DOC-XXXX-XXXX{% endblock %}</div>
+      <div>Emitido: {{ fecha_emision }}</div>
+      <div>Hora: {{ hora_emision }}</div>
+    </div>
+  </header>
+
+  <h1 class="doc-title">{% block doc_heading %}Documento{% endblock %}</h1>
+  <p class="doc-subtitle">{% block doc_subheading %}{% endblock %}</p>
+
+  {% block content %}{% endblock %}
+
+  <footer class="doc-footer">
+    {% block footer %}
+    <div class="footer-row">
+      <div>
+        <strong>Hospital Universitario UEV</strong><br>
+        C/ Tajo, s/n · 28670 Villaviciosa de Odón (Madrid)<br>
+        Tel: +34 91 740 72 72 · hospital@universidadeuropea.es
+      </div>
+      <div style="text-align: right;">
+        Documento generado electrónicamente<br>
+        Validez sin firma manuscrita<br>
+        <span style="font-family: monospace;">Ref. {% block ref %}{% endblock %}</span>
+      </div>
+    </div>
+    {% endblock %}
+  </footer>
+</div>
+
+</body>
+</html>

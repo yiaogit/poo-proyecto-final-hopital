@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" role="img" aria-label="Universidad Europea">
+  <!-- Red square with 'ue' -->
+  <rect x="0" y="0" width="80" height="80" rx="4" fill="#E63946"/>
+  <text x="40" y="58" font-family="Arial, Helvetica, sans-serif"
+        font-size="48" font-weight="900" font-style="italic"
+        text-anchor="middle" fill="#ffffff">ue</text>
+  <!-- Texto Universidad Europea -->
+  <text x="95" y="35" font-family="Arial, Helvetica, sans-serif"
+        font-size="22" font-weight="700" fill="currentColor">Universidad</text>
+  <text x="95" y="63" font-family="Arial, Helvetica, sans-serif"
+        font-size="22" font-weight="700" fill="currentColor">Europea</text>
+</svg>

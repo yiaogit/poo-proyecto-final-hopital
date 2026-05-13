@@ -1,0 +1,71 @@
+{% extends "print_base.html" %}
+{% block doc_title %}Comprobante de Cita · {{ cita.paciente.nombre }}{% endblock %}
+{% block doc_id %}CITA-{{ "%04d"|format(cita_idx) }}/{{ year }}{% endblock %}
+{% block doc_heading %}Comprobante de Cita{% endblock %}
+{% block doc_subheading %}Documento informativo para el paciente{% endblock %}
+{% block ref %}{{ cita_ref }}{% endblock %}
+
+{% block content %}
+
+<section class="section">
+  <div class="section-title">Datos del paciente</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Nombre:</span><span class="value">{{ cita.paciente.nombre }}</span></div>
+    <div class="field"><span class="label">DNI:</span><span class="value">{{ cita.paciente.dni }}</span></div>
+    <div class="field"><span class="label">Edad:</span><span class="value">{{ cita.paciente.edad }} años</span></div>
+    <div class="field"><span class="label">Cobertura:</span><span class="value">
+      {% if cita.paciente.seguro %}Con seguro médico{% else %}Sin seguro médico{% endif %}
+    </span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Datos de la cita</div>
+  <div class="field-grid cols-1">
+    <div class="field">
+      <span class="label">Fecha y hora:</span>
+      <span class="value" style="font-size: 16px; color: #E63946;">
+        <i class="bi bi-calendar-event"></i> {{ cita.fecha_hora }}
+      </span>
+    </div>
+    <div class="field"><span class="label">Especialidad:</span><span class="value">{{ cita.medico.especialidad }}</span></div>
+    <div class="field"><span class="label">Profesional médico:</span><span class="value">Dr./Dra. {{ cita.medico.nombre }}</span></div>
+    <div class="field"><span class="label">Núm. Colegiado:</span><span class="value">{{ cita.medico.identificacion }}</span></div>
+    <div class="field"><span class="label">Motivo de consulta:</span><span class="value">{{ cita.motivo }}</span></div>
+  </div>
+</section>
+
+{% if cita.tratamiento %}
+<section class="section">
+  <div class="section-title">Tratamiento previsto</div>
+  <div class="field-grid">
+    <div class="field"><span class="label">Tipo:</span><span class="value">{{ cita.tratamiento.tipo | capitalize }}</span></div>
+    <div class="field"><span class="label">Coste estimado:</span><span class="value">{{ "%.2f"|format(cita.tratamiento.calcular_costo()) }} €</span></div>
+  </div>
+  {% if cita.tratamiento.descripcion %}
+  <div class="info-box">
+    <strong>Descripción:</strong> {{ cita.tratamiento.descripcion }}
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+<div class="info-box">
+  <strong><i class="bi bi-info-circle-fill"></i> Indicaciones importantes</strong><br>
+  Le rogamos presentarse con 15 minutos de antelación en el área de recepción
+  con su DNI y, si dispone, su tarjeta del seguro médico. Para cancelar o modificar
+  esta cita, llame al <strong>91 740 72 72</strong> con al menos 24 horas de antelación.
+</div>
+
+<div class="doc-footer" style="border-top: none; margin-top: 30px;">
+  <div class="footer-row">
+    <div class="signature-block">
+      <div class="signature-line">Firma del personal de admisión</div>
+    </div>
+    <div class="signature-block">
+      <div class="signature-line">Recibido por el paciente</div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
